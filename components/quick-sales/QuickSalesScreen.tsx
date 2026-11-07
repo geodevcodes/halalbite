@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Search,
   ArrowLeft,
@@ -16,7 +16,8 @@ import {
   Trash2,
   Image as ImageIcon,
   CheckCircle2,
-  Printer
+  Printer,
+  Utensils
 } from "lucide-react";
 import { CategoryType, MenuItem, OrderItem } from "./types";
 import { initialMenuItems } from "./menuData";
@@ -77,6 +78,8 @@ export function QuickSalesScreen() {
   // Payment view toggle state (Screenshot 2)
   const [isPaymentViewOpen, setIsPaymentViewOpen] = useState<boolean>(false);
   const [quickPaySuccess, setQuickPaySuccess] = useState<boolean>(false);
+  const [orderPlacedSuccess, setOrderPlacedSuccess] = useState<boolean>(false);
+  const router = useRouter();
 
   // Play subtle POS beep
   const playBeep = useCallback((freq = 800, duration = 0.035) => {
@@ -191,7 +194,16 @@ export function QuickSalesScreen() {
     return val.toFixed(2);
   };
 
-  // Quick Pay by Cash (1-click completion)
+  const isRoomsOrder = orderType !== "Quick Sales";
+
+  // Handle Order button for Rooms (Dine In / Take Away / Delivery)
+  const handlePlaceOrder = () => {
+    if (!hasItems) return;
+    playBeep(1100, 0.1);
+    setOrderPlacedSuccess(true);
+  };
+
+  // Quick Pay by Cash (1-click completion for Quick Sales)
   const handleQuickPayCash = () => {
     if (!hasItems) return;
     playBeep(1100, 0.1);
@@ -488,20 +500,28 @@ export function QuickSalesScreen() {
             <div className="grid grid-cols-2 gap-2 pt-1">
               <button
                 type="button"
-                onClick={handleQuickPayCash}
+                onClick={isRoomsOrder ? handlePlaceOrder : handleQuickPayCash}
                 disabled={!hasItems}
                 className={`py-2.5 px-3 rounded-[3px] border border-[#16a34a] flex flex-col items-center justify-center transition-all ${
                   hasItems
                     ? "bg-[#132219] hover:bg-[#183022] active:bg-[#111e16] text-[#16a34a] cursor-pointer shadow-sm opacity-100"
                     : "bg-[#132219]/30 text-[#16a34a]/40 cursor-not-allowed opacity-40"
                 }`}
-                title={hasItems ? "Pay exact cash instantly" : "Add items to enable payment"}
+                title={
+                  hasItems
+                    ? isRoomsOrder
+                      ? "Place order and send to kitchen"
+                      : "Pay exact cash instantly"
+                    : "Add items to enable"
+                }
               >
                 <div className="flex items-center gap-1.5 font-semibold text-xs">
-                  <Banknote size={14} />
-                  <span>Quick Pay</span>
+                  {isRoomsOrder ? <Utensils size={14} /> : <Banknote size={14} />}
+                  <span>{isRoomsOrder ? "Order" : "Quick Pay"}</span>
                 </div>
-                <span className="text-[10px] opacity-75 font-normal">by Cash</span>
+                {!isRoomsOrder && (
+                  <span className="text-[10px] opacity-75 font-normal">by Cash</span>
+                )}
               </button>
 
               <button
@@ -629,6 +649,60 @@ export function QuickSalesScreen() {
                 className="flex-1 py-2 rounded-lg bg-[#0daa2b] hover:bg-[#0c9827] text-black font-bold text-xs cursor-pointer"
               >
                 Next Order
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rooms Order Placed Confirmation Modal */}
+      {orderPlacedSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="w-full max-w-sm rounded-xl bg-[#1c1c1c] border border-zinc-800 p-6 space-y-4 shadow-2xl text-center">
+            <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center">
+              <CheckCircle2 size={28} />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-base font-bold text-white">Order Placed Successfully!</h3>
+              <p className="text-xs text-zinc-400">
+                Order #{orderNumber} for <strong className="text-white">{customerName}</strong> has been saved to{" "}
+                <span className="text-orange-400 font-semibold">{orderType}</span> and sent to kitchen.
+              </p>
+            </div>
+            <div className="bg-[#141414] rounded-lg p-2.5 text-xs text-zinc-400 font-mono flex justify-between border border-zinc-800">
+              <span>Total Amount:</span>
+              <span className="text-white font-bold">₦{formatCurrency(grandTotal)}</span>
+            </div>
+            <div className="flex flex-col gap-2 pt-2">
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="flex-1 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Printer size={14} /> Print KOT
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOrderPlacedSuccess(false);
+                    setOrderItems([]);
+                    setOrderNumber((prev) => prev + 1);
+                  }}
+                  className="flex-1 py-2 rounded-lg bg-[#252525] hover:bg-[#303030] text-zinc-200 text-xs font-medium cursor-pointer"
+                >
+                  New Order
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setOrderPlacedSuccess(false);
+                  router.push("/sales-room");
+                }}
+                className="w-full py-2 rounded-lg bg-[#0daa2b] hover:bg-[#0c9827] text-black font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+              >
+                Return to Rooms &rarr;
               </button>
             </div>
           </div>
