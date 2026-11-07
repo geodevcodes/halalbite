@@ -6,6 +6,8 @@ import { OrderItem } from "./types";
 
 interface PaymentScreenProps {
   orderNumber: number;
+  orderType?: string;
+  customerName?: string;
   items: OrderItem[];
   subTotal: number;
   tax: number;
@@ -16,6 +18,8 @@ interface PaymentScreenProps {
 
 export function PaymentScreen({
   orderNumber,
+  orderType = "Quick Sales",
+  customerName = "Cash Customer",
   items,
   subTotal,
   tax,
@@ -172,8 +176,8 @@ export function PaymentScreen({
               Order # #{orderNumber}
             </h2>
             <div className="flex items-center justify-between text-xs text-zinc-400">
-              <span>Cash Customer</span>
-              <span>Quick Sales.</span>
+              <span className="truncate max-w-[200px] text-zinc-200 font-medium">{customerName}</span>
+              <span className="text-orange-400 font-medium">{orderType}.</span>
             </div>
           </div>
 

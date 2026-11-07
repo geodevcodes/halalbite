@@ -104,6 +104,7 @@ export function PosDashboardHub({ onLogout, cashierName = "Admin" }: PosDashboar
           id: "rooms",
           label: "Rooms",
           icon: <MdTableRestaurant size={28} />,
+          action: () => router.push("/sales-room"),
         },
         {
           id: "dashboard",
@@ -176,16 +177,19 @@ export function PosDashboardHub({ onLogout, cashierName = "Admin" }: PosDashboar
           id: "room",
           label: "Room",
           icon: <MapPin size={26} />,
+          action: () => router.push("/sales-room"),
         },
         {
           id: "table",
           label: "Table",
           icon: <Calculator size={26} />,
+          action: () => router.push("/sales-room"),
         },
         {
           id: "floor-plan",
           label: "Floor Plan",
           icon: <MdOutlineTableBar size={28} />,
+          action: () => router.push("/sales-room"),
         },
         {
           id: "other-payments",

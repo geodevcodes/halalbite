@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   Search,
   ArrowLeft,
@@ -32,9 +33,46 @@ export function QuickSalesScreen() {
     },
   ]);
   const [orderNumber, setOrderNumber] = useState<number>(8);
-  const [customerName, setCustomerName] = useState<string>("Cash Customer");
+
+  // Read URL query parameters reactively
+  const searchParams = useSearchParams();
+  const paramMode = searchParams.get("mode");
+  const paramTable = searchParams.get("table");
+  const paramCustomer = searchParams.get("customer");
+  const paramPhone = searchParams.get("phone");
+
+  // Derive order type from URL parameters
+  const urlOrderType = useMemo(() => {
+    if (paramTable || paramMode === "dine-in") return "Dine In";
+    if (paramMode === "takeaway" || paramMode === "take-away") return "Take Away";
+    if (paramMode === "delivery") return "Delivery";
+    return "Quick Sales";
+  }, [paramTable, paramMode]);
+
+  // Derive customer label from URL parameters
+  const urlCustomerName = useMemo(() => {
+    if (paramTable) {
+      return paramTable.startsWith("T") ? `Table ${paramTable}` : paramTable;
+    }
+    if (paramCustomer) {
+      const decoded = decodeURIComponent(paramCustomer);
+      return paramPhone ? `${decoded} | ${decodeURIComponent(paramPhone)}` : decoded;
+    }
+    if (paramMode === "takeaway" || paramMode === "take-away") return "Take Away Customer";
+    if (paramMode === "delivery") return "Delivery Customer";
+    return "Cash Customer";
+  }, [paramTable, paramCustomer, paramPhone, paramMode]);
+
+  // Support manual overrides if cashier edits them
+  const [customOrderType, setCustomOrderType] = useState<string | null>(null);
+  const [customCustomerName, setCustomCustomerName] = useState<string | null>(null);
+
+  const orderType = customOrderType ?? urlOrderType;
+  const customerName = customCustomerName ?? urlCustomerName;
+
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState<boolean>(false);
   const [customerInput, setCustomerInput] = useState<string>("");
+  const [orderTypeInput, setOrderTypeInput] = useState<string>("Quick Sales");
 
   // Payment view toggle state (Screenshot 2)
   const [isPaymentViewOpen, setIsPaymentViewOpen] = useState<boolean>(false);
@@ -165,6 +203,8 @@ export function QuickSalesScreen() {
     return (
       <PaymentScreen
         orderNumber={orderNumber}
+        orderType={orderType}
+        customerName={customerName}
         items={orderItems}
         subTotal={subTotal}
         tax={tax}
@@ -211,7 +251,7 @@ export function QuickSalesScreen() {
               </span>
             </Link>
             <span className="text-zinc-600 font-light">/</span>
-            <span className="text-xs text-zinc-400 font-medium hidden sm:inline">Quick Sales</span>
+            <span className="text-xs text-zinc-400 font-medium hidden sm:inline">{orderType}</span>
           </div>
 
           {/* Search bar (together with the header, positioned right before right panel divider) */}
@@ -236,10 +276,24 @@ export function QuickSalesScreen() {
             <h2 className="text-sm font-bold text-white tracking-tight leading-tight">
               Order # {orderNumber}
             </h2>
-            <div className="text-[11px] text-zinc-400 flex items-center gap-1.5">
-              <span className="truncate max-w-[100px]">{customerName}</span>
+            <div className="text-[11px] text-zinc-400 flex items-center gap-1.5 mt-0.5">
+              <span className="truncate max-w-[120px] text-zinc-200 font-medium" title={customerName}>
+                {customerName}
+              </span>
               <span>•</span>
-              <span>Quick Sales</span>
+              <span
+                className={`px-1.5 py-0.5 rounded text-[10px] font-semibold tracking-wide ${
+                  orderType === "Delivery"
+                    ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                    : orderType === "Take Away"
+                    ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                    : orderType === "Dine In"
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                    : "text-zinc-400 bg-zinc-800/80 px-1.5"
+                }`}
+              >
+                {orderType}
+              </span>
             </div>
           </div>
 
@@ -256,10 +310,11 @@ export function QuickSalesScreen() {
               type="button"
               onClick={() => {
                 setCustomerInput(customerName === "Cash Customer" ? "" : customerName);
+                setOrderTypeInput(orderType);
                 setIsCustomerModalOpen(true);
               }}
               className="w-7 h-7 rounded bg-[#222222] hover:bg-[#2c2c2c] text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-              title="Assign Customer"
+              title="Edit Order Type / Customer"
             >
               <User size={14} />
             </button>
@@ -477,16 +532,42 @@ export function QuickSalesScreen() {
       {isCustomerModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
           <div className="w-full max-w-sm rounded-xl bg-[#1c1c1c] border border-zinc-800 p-5 space-y-4 shadow-2xl">
-            <h3 className="text-sm font-bold text-white">Assign Customer Name</h3>
-            <input
-              type="text"
-              value={customerInput}
-              onChange={(e) => setCustomerInput(e.target.value)}
-              placeholder="e.g. Table 4 / Brother Tariq"
-              className="w-full h-10 px-3 rounded-lg border border-zinc-700 bg-[#121212] text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500"
-              autoFocus
-            />
-            <div className="flex justify-end gap-2 text-xs">
+            <h3 className="text-sm font-bold text-white">Order Details & Customer</h3>
+
+            {/* Order Mode Selector */}
+            <div className="space-y-1">
+              <label className="text-[11px] text-zinc-400">Order Mode</label>
+              <div className="grid grid-cols-4 gap-1.5 text-xs">
+                {(["Quick Sales", "Dine In", "Take Away", "Delivery"] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => setOrderTypeInput(mode)}
+                    className={`py-1.5 px-1 rounded text-center text-[10px] sm:text-[11px] font-medium transition-colors ${
+                      orderTypeInput === mode
+                        ? "bg-orange-600 text-white font-bold"
+                        : "bg-zinc-800 text-zinc-400 hover:text-white"
+                    }`}
+                  >
+                    {mode}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[11px] text-zinc-400">Customer Name / Details</label>
+              <input
+                type="text"
+                value={customerInput}
+                onChange={(e) => setCustomerInput(e.target.value)}
+                placeholder="e.g. Table 4 / Brother Tariq"
+                className="w-full h-10 px-3 rounded-lg border border-zinc-700 bg-[#121212] text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500"
+                autoFocus
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 text-xs pt-1">
               <button
                 type="button"
                 onClick={() => setIsCustomerModalOpen(false)}
@@ -497,7 +578,15 @@ export function QuickSalesScreen() {
               <button
                 type="button"
                 onClick={() => {
-                  setCustomerName(customerInput.trim() || "Cash Customer");
+                  setCustomOrderType(orderTypeInput);
+                  setCustomCustomerName(
+                    customerInput.trim() ||
+                      (orderTypeInput === "Take Away"
+                        ? "Take Away Customer"
+                        : orderTypeInput === "Delivery"
+                        ? "Delivery Customer"
+                        : "Cash Customer")
+                  );
                   setIsCustomerModalOpen(false);
                 }}
                 className="px-4 py-1.5 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-medium cursor-pointer"
