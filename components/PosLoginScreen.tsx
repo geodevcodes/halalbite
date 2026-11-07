@@ -175,7 +175,7 @@ export function PosLoginScreen() {
       <div className="w-full md:w-1/2 min-h-[38vh] md:min-h-screen bg-[#1d1d1d] flex flex-col items-center justify-center p-8 transition-colors">
         <div className="text-center space-y-1">
           <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-bold tracking-tight text-[#dfdfdf]">
-            Halal Bite Demo
+            HalalBite Restaurant
           </h1>
           <p className="text-sm font-medium text-[#22c55e] flex items-center justify-center gap-1.5">
             Cloud
@@ -318,7 +318,7 @@ export function PosLoginScreen() {
               Default PIN for demo store is &apos;123&apos;
             </p>
             <p
-              onClick={() => setIsWalkthroughOpen(true)}
+              // onClick={() => setIsWalkthroughOpen(true)}
               className="text-xs sm:text-[13px] italic text-[#9c9c9c] hover:text-white transition-colors cursor-pointer"
             >
               Click here to watch walkthrough video
