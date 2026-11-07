@@ -24,7 +24,19 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col bg-[#121212] text-white selection:bg-orange-500 selection:text-white">
-        {children}
+        <div className="desktop-app">{children}</div>
+        <section
+          className="desktop-only-notice"
+          aria-labelledby="desktop-only-title"
+        >
+          <div className="desktop-only-notice__content">
+            <p className="desktop-only-notice__brand">HalalBite</p>
+            <h1 id="desktop-only-title">Desktop screen required</h1>
+            <p>
+              This app is available on desktop devices. Please open HalalBite on a desktop screen to continue.
+            </p>
+          </div>
+        </section>
       </body>
     </html>
   );

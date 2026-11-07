@@ -20,6 +20,49 @@ body {
   -webkit-user-select: none;
 }
 
+.desktop-only-notice {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .desktop-app {
+    display: none;
+  }
+
+  .desktop-only-notice {
+    display: grid;
+    min-height: 100vh;
+    min-height: 100svh;
+    place-items: center;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .desktop-only-notice__content {
+    max-width: 28rem;
+  }
+
+  .desktop-only-notice__brand {
+    margin-bottom: 1.5rem;
+    color: #f97316;
+    font-size: 3.5rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .desktop-only-notice h1 {
+    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .desktop-only-notice__content > p:last-child {
+    color: #a1a1aa;
+    line-height: 1.6;
+  }
+}
+
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   20%, 60% { transform: translateX(-8px); }
