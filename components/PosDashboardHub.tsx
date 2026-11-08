@@ -110,6 +110,7 @@ export function PosDashboardHub({ onLogout, cashierName = "Admin" }: PosDashboar
           id: "dashboard",
           label: "Dashboard",
           icon: <LayoutDashboard size={26} />,
+          action: () => router.push("/dashboard"),
         },
       ],
     },
@@ -146,11 +147,6 @@ export function PosDashboardHub({ onLogout, cashierName = "Admin" }: PosDashboar
     {
       title: "Session",
       items: [
-        {
-          id: "x-report",
-          label: "X Report",
-          icon: <FaCashRegister size={26} />,
-        },
         {
           id: "logout",
           label: "Logout",
@@ -242,19 +238,14 @@ export function PosDashboardHub({ onLogout, cashierName = "Admin" }: PosDashboar
           icon: <Repeat size={26} />,
         },
         {
+          id: "x-report",
+          label: "X Report",
+          icon: <FaCashRegister size={26} />,
+        },
+        {
           id: "z-report",
           label: "Z Report",
           icon: <BarChart3 size={26} />,
-        },
-      ],
-    },
-    {
-      title: "Tools",
-      items: [
-        {
-          id: "import",
-          label: "Import",
-          icon: <ArrowUpDown size={26} />,
         },
       ],
     },
