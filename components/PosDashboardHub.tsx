@@ -145,6 +145,26 @@ export function PosDashboardHub({ onLogout, cashierName = "Admin" }: PosDashboar
       ],
     },
     {
+      title: "Reports",
+      items: [
+        {
+          id: "sales-report",
+          label: "Sales Report",
+          icon: <Repeat size={26} />,
+        },
+        {
+          id: "x-report",
+          label: "X Report",
+          icon: <FaCashRegister size={26} />,
+        },
+        {
+          id: "z-report",
+          label: "Z Report",
+          icon: <BarChart3 size={26} />,
+        },
+      ],
+    },
+    {
       title: "Session",
       items: [
         {
@@ -158,39 +178,6 @@ export function PosDashboardHub({ onLogout, cashierName = "Admin" }: PosDashboar
           label: "Exit",
           icon: <FaArrowRightToBracket size={26} />,
           action: onLogout,
-        },
-      ],
-    },
-    {
-      title: "Masters",
-      items: [
-        {
-          id: "users",
-          label: "Users",
-          icon: <User size={26} />,
-        },
-        {
-          id: "room",
-          label: "Room",
-          icon: <MapPin size={26} />,
-          action: () => router.push("/sales-room"),
-        },
-        {
-          id: "table",
-          label: "Table",
-          icon: <Calculator size={26} />,
-          action: () => router.push("/sales-room"),
-        },
-        {
-          id: "floor-plan",
-          label: "Floor Plan",
-          icon: <MdOutlineTableBar size={28} />,
-          action: () => router.push("/sales-room"),
-        },
-        {
-          id: "other-payments",
-          label: "Other Payments",
-          icon: <FaMoneyBillWave size={26} />,
         },
       ],
     },
@@ -230,25 +217,39 @@ export function PosDashboardHub({ onLogout, cashierName = "Admin" }: PosDashboar
       ],
     },
     {
-      title: "Reports",
+      title: "Masters",
       items: [
         {
-          id: "sales-report",
-          label: "Sales Report",
-          icon: <Repeat size={26} />,
+          id: "users",
+          label: "Users",
+          icon: <User size={26} />,
         },
         {
-          id: "x-report",
-          label: "X Report",
-          icon: <FaCashRegister size={26} />,
+          id: "room",
+          label: "Room",
+          icon: <MapPin size={26} />,
+          action: () => router.push("/sales-room"),
         },
         {
-          id: "z-report",
-          label: "Z Report",
-          icon: <BarChart3 size={26} />,
+          id: "table",
+          label: "Table",
+          icon: <Calculator size={26} />,
+          action: () => router.push("/sales-room"),
+        },
+        {
+          id: "floor-plan",
+          label: "Floor Plan",
+          icon: <MdOutlineTableBar size={28} />,
+          action: () => router.push("/sales-room"),
+        },
+        {
+          id: "other-payments",
+          label: "Other Payments",
+          icon: <FaMoneyBillWave size={26} />,
         },
       ],
     },
+
     {
       title: "Inventory",
       items: [
