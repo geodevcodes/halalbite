@@ -7,9 +7,6 @@ import {
   ClipboardList,
   Refrigerator,
   Receipt,
-  User,
-  MapPin,
-  Calculator,
   Shapes,
   Package,
   Printer,
@@ -17,12 +14,6 @@ import {
   PlusCircle,
   Repeat,
   BarChart3,
-  ArrowUpDown,
-  ShoppingCart,
-  Scissors,
-  FileSpreadsheet,
-  CloudDownload,
-  Settings,
   Moon,
   Store,
   CheckCircle2,
@@ -35,9 +26,8 @@ import {
   FaArrowRightToBracket,
   FaWhatsapp,
   FaHeadset,
-  FaMoneyBillWave,
 } from "react-icons/fa6";
-import { MdTableRestaurant, MdOutlineTableBar } from "react-icons/md";
+import { MdTableRestaurant } from "react-icons/md";
 import { SupportModal } from "./SupportModal";
 
 interface PosDashboardHubProps {
@@ -121,16 +111,19 @@ export function PosDashboardHub({ onLogout, cashierName = "Admin" }: PosDashboar
           id: "order-summary",
           label: "Order Summary",
           icon: <ClipboardList size={26} />,
+          action: () => router.push("/order-summary"),
         },
         {
           id: "delivery",
           label: "Delivery",
           icon: <FaMotorcycle size={26} />,
+          action: () => router.push("/sales-room?tab=delivery"),
         },
         {
           id: "kitchen",
           label: "Kitchen",
           icon: <Refrigerator size={26} />,
+          action: () => router.push("/kitchen"),
         },
       ],
     },
@@ -161,23 +154,6 @@ export function PosDashboardHub({ onLogout, cashierName = "Admin" }: PosDashboar
           id: "z-report",
           label: "Z Report",
           icon: <BarChart3 size={26} />,
-        },
-      ],
-    },
-    {
-      title: "Session",
-      items: [
-        {
-          id: "logout",
-          label: "Logout",
-          icon: <FaArrowRightFromBracket size={26} />,
-          action: onLogout,
-        },
-        {
-          id: "exit",
-          label: "Exit",
-          icon: <FaArrowRightToBracket size={26} />,
-          action: onLogout,
         },
       ],
     },
@@ -217,74 +193,92 @@ export function PosDashboardHub({ onLogout, cashierName = "Admin" }: PosDashboar
       ],
     },
     {
-      title: "Masters",
+      title: "Session",
       items: [
         {
-          id: "users",
-          label: "Users",
-          icon: <User size={26} />,
+          id: "logout",
+          label: "Logout",
+          icon: <FaArrowRightFromBracket size={26} />,
+          action: onLogout,
         },
         {
-          id: "room",
-          label: "Room",
-          icon: <MapPin size={26} />,
-          action: () => router.push("/sales-room"),
-        },
-        {
-          id: "table",
-          label: "Table",
-          icon: <Calculator size={26} />,
-          action: () => router.push("/sales-room"),
-        },
-        {
-          id: "floor-plan",
-          label: "Floor Plan",
-          icon: <MdOutlineTableBar size={28} />,
-          action: () => router.push("/sales-room"),
-        },
-        {
-          id: "other-payments",
-          label: "Other Payments",
-          icon: <FaMoneyBillWave size={26} />,
+          id: "exit",
+          label: "Exit",
+          icon: <FaArrowRightToBracket size={26} />,
+          action: onLogout,
         },
       ],
     },
 
-    {
-      title: "Inventory",
-      items: [
-        {
-          id: "purchase",
-          label: "Purchase",
-          icon: <ShoppingCart size={26} />,
-        },
-        {
-          id: "expense",
-          label: "Expense",
-          icon: <Scissors size={26} />,
-        },
-        {
-          id: "inventory-report",
-          label: "Inventory Report",
-          icon: <FileSpreadsheet size={26} />,
-        },
-      ],
-    },
-    {
-      title: "Configurations",
-      items: [
-        {
-          id: "pull-config",
-          label: "Pull Config",
-          icon: <CloudDownload size={26} />,
-        },
-        {
-          id: "settings",
-          label: "Settings",
-          icon: <Settings size={26} />,
-        },
-      ],
-    },
+    // {
+    //   title: "Masters",
+    //   items: [
+    //     {
+    //       id: "users",
+    //       label: "Users",
+    //       icon: <User size={26} />,
+    //     },
+    //     {
+    //       id: "room",
+    //       label: "Room",
+    //       icon: <MapPin size={26} />,
+    //       action: () => router.push("/sales-room"),
+    //     },
+    //     {
+    //       id: "table",
+    //       label: "Table",
+    //       icon: <Calculator size={26} />,
+    //       action: () => router.push("/sales-room"),
+    //     },
+    //     {
+    //       id: "floor-plan",
+    //       label: "Floor Plan",
+    //       icon: <MdOutlineTableBar size={28} />,
+    //       action: () => router.push("/sales-room"),
+    //     },
+    //     {
+    //       id: "other-payments",
+    //       label: "Other Payments",
+    //       icon: <FaMoneyBillWave size={26} />,
+    //     },
+    //   ],
+    // },
+
+    // {
+    //   title: "Inventory",
+    //   items: [
+    //     {
+    //       id: "purchase",
+    //       label: "Purchase",
+    //       icon: <ShoppingCart size={26} />,
+    //     },
+    //     {
+    //       id: "expense",
+    //       label: "Expense",
+    //       icon: <Scissors size={26} />,
+    //     },
+    //     {
+    //       id: "inventory-report",
+    //       label: "Inventory Report",
+    //       icon: <FileSpreadsheet size={26} />,
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: "Configurations",
+    //   items: [
+    //     {
+    //       id: "pull-config",
+    //       label: "Pull Config",
+    //       icon: <CloudDownload size={26} />,
+    //     },
+    //     {
+    //       id: "settings",
+    //       label: "Settings",
+    //       icon: <Settings size={26} />,
+    //     },
+    //   ],
+    // },
   ];
 
   return (

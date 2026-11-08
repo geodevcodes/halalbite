@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+// import TanstackProvider from "@/providers/tanstack-providers";
+// import { ThemeProvider } from "@/providers/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "HalalBite POS - Offline Restaurant Management System",
-  description: "High-speed offline-first Restaurant POS Management System for touch terminals and desktops.",
+  description:
+    "High-speed offline-first Restaurant POS Management System for touch terminals and desktops.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -24,7 +27,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col bg-[#121212] text-white selection:bg-orange-500 selection:text-white">
-        <div className="desktop-app">{children}</div>
+        {/* <TanstackProvider> */}
+          {/* <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          > */}
+            <div className="desktop-app">{children}</div>
+          {/* </ThemeProvider> */}
+        {/* </TanstackProvider> */}
         <section
           className="desktop-only-notice"
           aria-labelledby="desktop-only-title"
@@ -33,7 +45,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <p className="desktop-only-notice__brand">HalalBite</p>
             <h1 id="desktop-only-title">Desktop screen required</h1>
             <p>
-              This app is available on desktop devices. Please open HalalBite on a desktop screen to continue.
+              This app is available on desktop devices. Please open HalalBite on
+              a desktop screen to continue.
             </p>
           </div>
         </section>
